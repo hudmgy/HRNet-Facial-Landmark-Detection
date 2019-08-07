@@ -30,7 +30,7 @@ def get_preds(scores):
 
     pred_mask = maxval.gt(0).repeat(1, 1, 2).float()
     preds *= pred_mask
-    return preds
+    return preds, maxval
 
 
 def compute_nme(preds, meta):
@@ -62,7 +62,7 @@ def compute_nme(preds, meta):
 
 
 def decode_preds(output, center, scale, res):
-    coords = get_preds(output)  # float type
+    coords, conf = get_preds(output)  # float type
 
     coords = coords.cpu()
     # pose-processing
@@ -84,4 +84,4 @@ def decode_preds(output, center, scale, res):
     if preds.dim() < 3:
         preds = preds.view(1, preds.size())
 
-    return preds
+    return preds, conf

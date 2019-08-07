@@ -176,7 +176,7 @@ def inference(config, data_loader, model):
     losses = AverageMeter()
 
     num_classes = config.MODEL.NUM_JOINTS
-    predictions = torch.zeros((len(data_loader.dataset), num_classes, 2))
+    predictions = torch.zeros((len(data_loader.dataset), num_classes, 3))
 
     model.eval()
 
@@ -191,7 +191,7 @@ def inference(config, data_loader, model):
             data_time.update(time.time() - end)
             output = model(inp)
             score_map = output.data.cpu()
-            preds = decode_preds(score_map, meta['center'], meta['scale'], [64, 64])
+            preds, conf = decode_preds(score_map, meta['center'], meta['scale'], [64, 64])
 
             # NME
             nme_temp = compute_nme(preds, meta)
@@ -204,7 +204,8 @@ def inference(config, data_loader, model):
             nme_batch_sum += np.sum(nme_temp)
             nme_count = nme_count + preds.size(0)
             for n in range(score_map.size(0)):
-                predictions[meta['index'][n], :, :] = preds[n, :, :]
+                predictions[meta['index'][n], :, :2] = preds[n, :, :]
+                predictions[meta['index'][n], :, 2] = conf[n, :]
 
             # measure elapsed time
             batch_time.update(time.time() - end)
