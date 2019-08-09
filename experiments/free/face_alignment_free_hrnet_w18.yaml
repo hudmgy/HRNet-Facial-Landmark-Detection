@@ -3,10 +3,10 @@ WORKERS: 4
 PRINT_FREQ: 50
 
 DATASET:
-  DATASET: WFLW
-  ROOT: './data/wflw/images/'
-  TRAINSET: './data/wflw/face_landmarks_wflw_train.csv'
-  TESTSET: './data/wflw/face_landmarks_wflw_test.csv'
+  DATASET: FreeData
+  ROOT: './data/free/'
+  TRAINSET: './data/free/test.csv'
+  TESTSET: './data/free/test.csv'
   FLIP: true
   SCALE_FACTOR: 0.25
   ROT_FACTOR: 30

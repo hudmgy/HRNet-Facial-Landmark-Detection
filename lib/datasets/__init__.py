@@ -8,6 +8,7 @@ from .aflw import AFLW
 from .cofw import COFW
 from .face300w import Face300W
 from .wflw import WFLW
+from .free import FreeData
 
 __all__ = ['AFLW', 'COFW', 'Face300W', 'WFLW', 'get_dataset']
 
@@ -22,6 +23,8 @@ def get_dataset(config):
         return Face300W
     elif config.DATASET.DATASET == 'WFLW':
         return WFLW
+    elif config.DATASET.DATASET == 'FreeData':
+        return FreeData
     else:
         raise NotImplemented()
 

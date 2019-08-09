@@ -16,7 +16,7 @@ import numpy as np
 from ..utils.transforms import fliplr_joints, crop, generate_target, transform_pixel
 
 
-class WFLW(data.Dataset):
+class FreeData(data.Dataset):
     def __init__(self, cfg, is_train=True, transform=None):
         # specify annotation file for dataset
         if is_train:
@@ -57,7 +57,7 @@ class WFLW(data.Dataset):
         pts = self.landmarks_frame.iloc[idx, 4:].values
         pts = pts.astype('float').reshape(-1, 2)
 
-        scale *= 1.25
+        scale *= 1.28
         nparts = pts.shape[0]
         img = np.array(Image.open(image_path).convert('RGB'), dtype=np.float32)
 
@@ -83,10 +83,10 @@ class WFLW(data.Dataset):
                                                scale, self.output_size, rot=r)
                 target[i] = generate_target(target[i], tpts[i]-1, self.sigma,
                                             label_type=self.label_type)
-        if False:
-            img = img.astype(np.float32)
-            img = (img/255.0 - self.mean) / self.std
-            img = img.transpose([2, 0, 1])
+
+        img = img.astype(np.float32)
+        img = (img/255.0 - self.mean) / self.std
+        img = img.transpose([2, 0, 1])
         target = torch.Tensor(target)
         tpts = torch.Tensor(tpts)
         center = torch.Tensor(center)
@@ -94,8 +94,8 @@ class WFLW(data.Dataset):
         meta = {'index': idx, 'center': center, 'scale': scale,
                 'pts': torch.Tensor(pts), 'tpts': tpts}
 
-        # return img, target, meta
-        return img, image_path, meta
+        return img, target, meta
+
 
 if __name__ == '__main__':
     pass

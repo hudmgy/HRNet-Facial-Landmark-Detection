@@ -205,7 +205,7 @@ def inference(config, data_loader, model):
             nme_count = nme_count + preds.size(0)
             for n in range(score_map.size(0)):
                 predictions[meta['index'][n], :, :2] = preds[n, :, :]
-                predictions[meta['index'][n], :, 2] = conf[n, :]
+                predictions[meta['index'][n], :, 2:] = conf[n, :]
 
             # measure elapsed time
             batch_time.update(time.time() - end)
