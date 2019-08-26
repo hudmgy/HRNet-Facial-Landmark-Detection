@@ -23,14 +23,16 @@ def draw_kpts(src_dir, target_dir, landmarks_gt, predictions):
         img = cv2.imread(image_path)
         preds = predictions[idx]
         conf = 0
-        # for i in range(33, preds.shape[0]):
-        for i in [54,88,92,96,97]:
+        for i in range(33, preds.shape[0]):
+        #for i in [54,88,92,96,97]:
             conf += preds[i,2]
             cv2.circle(img, (preds[i,0], preds[i,1]), 3, (0,0,255))
 
-        target_file = osp.join(target_dir, '%f_%s'%(conf,osp.basename(image_path)))
-        if not osp.exists(osp.dirname(target_file)):
-            os.makedirs(osp.dirname(target_file))
+        target_file = image_path.replace(src_dir, target_dir)
+        target_path = osp.dirname(target_file)
+        target_file = osp.join(target_path, '%f_%s'%(conf,osp.basename(target_file)))
+        if not osp.exists(target_path):
+            os.makedirs(target_path)
         cv2.imwrite(target_file, img)
 
 
@@ -40,8 +42,8 @@ if __name__=='__main__':
     # final_output_dir = 'output/WFLW/face_alignment_wflw_hrnet_w18'
     csv_file = 'data/free/test.csv'
     src_dir = 'data/free'
+    target_dir = osp.join(src_dir, 'alignment')
     final_output_dir = 'output/FreeData/face_alignment_free_hrnet_w18'
-    target_dir = osp.join(final_output_dir, 'draw')
 
     landmarks_gt = pd.read_csv(csv_file)
     predictions = torch.load(osp.join(final_output_dir, 'predictions.pth'))
