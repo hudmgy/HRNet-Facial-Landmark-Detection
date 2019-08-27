@@ -23,10 +23,15 @@ def draw_kpts(src_dir, target_dir, landmarks_gt, predictions):
         img = cv2.imread(image_path)
         preds = predictions[idx]
         conf = 0
-        for i in range(33, preds.shape[0]):
-        #for i in [54,88,92,96,97]:
-            conf += preds[i,2]
-            cv2.circle(img, (preds[i,0], preds[i,1]), 3, (0,0,255))
+        # for i in range(33, preds.shape[0]):
+        # #for i in [54,88,92,96,97]:
+        #     conf += preds[i,2]
+        #     cv2.circle(img, (preds[i,0], preds[i,1]), 3, (0,0,255))
+
+        h = 100 * scale * 1.25
+        cv2.rectangle(img, (int(center_w-h),int(center_h-h)), (int(center_w+h), int(center_h+h)), (0,255,255))
+        for i in range(preds.shape[0]):
+            cv2.circle(img, (int(pts[i,0]), int(pts[i,1])), 2, (0,0,255))
 
         target_file = image_path.replace(src_dir, target_dir)
         target_path = osp.dirname(target_file)
@@ -37,13 +42,15 @@ def draw_kpts(src_dir, target_dir, landmarks_gt, predictions):
 
 
 if __name__=='__main__':
-    # csv_file = 'data/wflw/face_landmarks_wflw_test.csv'
-    # src_dir = 'data/wflw/images'
-    # final_output_dir = 'output/WFLW/face_alignment_wflw_hrnet_w18'
-    csv_file = 'data/free/test.csv'
-    src_dir = 'data/free'
-    target_dir = osp.join(src_dir, 'alignment')
-    final_output_dir = 'output/FreeData/face_alignment_free_hrnet_w18'
+    csv_file = 'data/wflw/face_landmarks_wflw_test.csv'
+    src_dir = 'data/wflw/images'
+    target_dir = osp.join('data/wflw/alignment')
+    final_output_dir = 'output/WFLW/face_alignment_wflw_hrnet_w18'
+
+    # csv_file = 'data/free/test.csv'
+    # src_dir = 'data/free'
+    # target_dir = osp.join(src_dir, 'alignment')
+    # final_output_dir = 'output/FreeData/face_alignment_free_hrnet_w18'
 
     landmarks_gt = pd.read_csv(csv_file)
     predictions = torch.load(osp.join(final_output_dir, 'predictions.pth'))
