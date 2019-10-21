@@ -1,4 +1,4 @@
-GPUS: (-1,)
+GPUS: (0,)
 WORKERS: 4
 PRINT_FREQ: 50
 
