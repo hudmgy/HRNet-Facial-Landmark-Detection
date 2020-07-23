@@ -19,6 +19,7 @@ from lib.config import config, update_config
 from lib.utils import utils
 from lib.datasets import get_dataset
 from lib.core import function
+import ipdb
 
 
 def parse_args():
@@ -28,6 +29,9 @@ def parse_args():
     parser.add_argument('--cfg', help='experiment configuration filename',
                         required=True, type=str)
     parser.add_argument('--model-file', help='model parameters', required=True, type=str)
+
+    parser.add_argument('--onnx-export', type=str, default='',
+                    help="convert model to onnx")
 
     args = parser.parse_args()
     update_config(config, args)
@@ -52,6 +56,10 @@ def main():
     config.MODEL.INIT_WEIGHTS = False
     config.freeze()
     model = models.get_face_alignment_net(config)
+    if args.onnx_export:
+        torch_out = torch.onnx._export(model, torch.rand(1, 3, config.IMAGE_SIZE), 
+                osp.join(final_output_dir, args.onnx_export), export_params=True)
+        return
 
     gpus = list(config.GPUS)
     if gpus[0] > -1:
@@ -82,6 +90,7 @@ def main():
         pin_memory=config.PIN_MEMORY
     )
 
+    ipdb.set_trace()
     nme, predictions = function.inference(config, test_loader, model)
 
     torch.save(predictions, os.path.join(final_output_dir, 'predictions.pth'))

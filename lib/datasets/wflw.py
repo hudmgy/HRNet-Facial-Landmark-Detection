@@ -83,7 +83,7 @@ class WFLW(data.Dataset):
                                                scale, self.output_size, rot=r)
                 target[i] = generate_target(target[i], tpts[i]-1, self.sigma,
                                             label_type=self.label_type)
-        if False:
+        if True:
             img = img.astype(np.float32)
             img = (img/255.0 - self.mean) / self.std
             img = img.transpose([2, 0, 1])
@@ -94,8 +94,8 @@ class WFLW(data.Dataset):
         meta = {'index': idx, 'center': center, 'scale': scale,
                 'pts': torch.Tensor(pts), 'tpts': tpts}
 
-        # return img, target, meta
-        return img, image_path, meta
+        return img, target, meta
+        #return img, image_path, meta
 
 if __name__ == '__main__':
     pass
